@@ -1,0 +1,74 @@
+---
+slug: "how-to-get-yyyy-mm-dd-with-vanilla-js"
+title: "How to get YYYY-MM-DD with Vanilla JS"
+date: 2021-04-25
+author: jyggiz
+tags:
+  - javascript
+  - date
+---
+
+Hoi! (Hi on Dutch)
+
+I hope you are doing well, dear reader!
+
+Recently I needed to get the current date in `YYYY-MM-DD` format of a string. It looks like quite a simple task. It can be solved using libraries, but our project was small and I didn't want to load the library for the sake of one task, so I decided to do it using vanilla JS.
+
+So I found the most suitable answer for me on [StackOverflow](https://stackoverflow.com/):
+```html
+const date = new Date();
+return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+	.toISOString()
+	.split(’T’)[0];
+```
+
+A short and working solution, which I immediately applied in the project, but then thought that I didn't quite understand how it works (In general, I never deeply delved into working with Date).
+
+Here I would like to tell you how it works. Let's go!
+
+## How does toISOString work?
+This is a method on your Date object that returns your date in the format of a `YYYY-MM-DDTHH:mm:ss.sssZ` string. In simple terms, it returns date (year, month and day) and time (hours, minutes, seconds and milliseconds). The 'T' serves as a delimiter to indicate that time begins after it.
+
+Now the question is, what is Z? Z means the time zone offset is 0. Zero time zone offset is equal to UTC.
+
+_Minute of basic knowledge: What is UTC? Coordinated Universal Time is the standard by which society regulates clocks and times. Time anywhere in the world depends on 2 variables - [UTC](https://www.timeanddate.com/worldclock/timezone/utc) and time zone._
+
+`toISOString()` always translates your date to UTC. For example, if you display this line of code in the browser console: `new Date().toISOString()`, then it will always return the time according to UTC.
+
+## Why do we need date.getTime () - date.getTimezoneOffset () * 60000
+Now it becomes clear that we need the code `date.getTime() - date.getTimezoneOffset() * 60000` to solve the problem with the time zone, because without it we will always get the time according to UTC.
+
+Now let's see how this expression works and what it returns to us.
+
+`date.getTime()` will return us the time in milliseconds from the beginning of the Unix epoch to the current UTC time, that is, not taking into account the time of your time zone.
+
+_The start date of the Unix epoch is 1970–01–01T00:00:000Z._
+
+I would also like to note that the code ​​below are return date and time in your local time zone:
+```
+new Date(date.getTime())
+```
+Because to the value in milliseconds, new Date()will always add or subtract the timezone difference.
+
+It follows that the expression below will always return the UTC date and time:
+```
+new Date(date.getTime()).toISOString()
+```
+
+Now, to `date.getTime()`, we need to add the difference between our time zone and UTC, that is, add this difference to the current time at the top in order to overtake our local time by exactly the difference between local time zone and UTC. We do this so that later the `toISOString()` method, when it converts the time to UTC, removes the time that we added from above and we get the current date and time according to our local time zone.
+
+Now we need to return the date based on the timezone.
+
+Here we need the `getTimezoneOffset()` method. It returns the difference in minutes between the time zone set on your computer and the UTC time zone. If the difference is positive, then your time zone is behind UTC, if negative, then UTC is ahead. Since we got the minutes, we need to convert them to milliseconds (1 minute - 60,000 milliseconds).
+
+Now our code looks like this:
+```
+new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString()
+```
+
+And in order to get `YYYY-MM-DD`, you just need to cut off the part of the string after the 'T' character:
+```
+new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0]
+```
+
+Now we know a little more about dates in JS!

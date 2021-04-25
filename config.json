@@ -1,19 +1,22 @@
 {
-  "base_url": "https://wutali-nextjs-netlify-blog.netlify.app",
-  "site_title": "Next.js Netlify Blog",
-  "site_description": "Next.js blog template for Netlify",
+  "base_url": "https://frosty-cori-694268.netlify.app/",
+  "site_title": "Timur Zhigmytov Blog",
+  "site_description": "Timur Zhigmytov's blog about web development",
   "site_keywords": [
     {
-      "keyword": "Next.js"
+      "keyword": "Web development"
     },
     {
-      "keyword": "Netlify"
+      "keyword": "Javascript"
     },
     {
-      "keyword": "React"
+      "keyword": "HTML"
+    },
+    {
+      "keyword": "CSS"
     }
   ],
   "posts_per_page": 5,
   "twitter_account": "@my-account",
-  "github_account": "wutali"
+  "github_account": "jyggiz"
 }
