@@ -16,7 +16,7 @@ export default function Index() {
           👋 Hi, I'm Timur Zhigmytov<span className="fancy">.</span>
           </h1>
           <span className="handle">@jyggiz</span>
-          <h2>A blog about web, soft-skills and something else</h2>
+          <h2>Frontend Developer @MediaMonks</h2>
           <SocialList />
         </div>
       </div>
