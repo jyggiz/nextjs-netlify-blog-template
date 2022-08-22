@@ -1,0 +1,85 @@
+---
+slug: "selector-list-with-focus-visible-on-safari"
+title: "Selector list with :focus-visible on Safari"
+date: 2022-08-22
+author: jyggiz
+tags:
+  - css
+  - safari
+---
+
+Hello!
+
+I recently ran into the problem of a non-working css selector on my project. This happened in safari browser (my version is Safari Version 13.1.3 (15609.4.1) - MacOS Catalina Version 10.15.7 (19H2))
+
+Our `StartButton` component for some reason did not reproduce `:hover` styles in safari browser. HTML of my component looked like this:
+```html
+<a class="startButton" href="/intro/" style="">
+	<span class="abs-fill" style="">
+		<span class="abs-fill border"></span>
+		<span class="abs-fill border"></span>
+		<span class="abs-fill border"></span>
+		<span class="abs-fill hover"></span>
+	</span>
+	<span class="label" style="">
+		Choose your side
+	</span>
+</a>
+```
+
+The required CSS for this example looked like this:
+```css
+.startButton {
+	// Some styles
+
+	// It doesn't work
+	&:hover, &:focus-visible {
+    .hover {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 300ms $easeOutExpo, transform 300ms $easeOutExpo;
+    }
+  }
+}
+```
+
+After a long debag process, I realized that safari version less than 15.4 on desktop does not support the selector `:focus-visible`.
+[Support according to caniuse.com](https://caniuse.com/?search=focus-visible).
+
+After that, it was still unclear to me exactly why `:hover` did not acquire its own styles despite the fact that safari does not support `:focus-visible`. And then I started searching and found the information I needed in [one stackoverflow response](https://stackoverflow.com/questions/38856208/what-happens-when-the-browser-doesnt-support-a-css-pseudo-class):
+
+> If browser doesn't recognize the selector, it follows CSS2.1 §4.1.7 to the letter and drops the entire ruleset, no questions asked.
+
+And now the words from the sources of the rule itself:
+
+> When a user agent cannot parse the selector (i.e., it is not valid CSS 2.1), it must ignore the selector and the following declaration block (if any) as well.
+
+The conclusion is that due to the fact that safari cannot recognize the `:focus-visible` pseudo-selector, the entire block with css declarations is simply ignored!
+
+Now to fix this and restore `:hover` styles for `StartButton` we need to rewrite our CSS as follows:
+```css
+.startButton {
+	// Some styles
+
+	// It works
+	&:hover {
+    .hover {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 300ms $easeOutExpo, transform 300ms $easeOutExpo;
+    }
+  }
+
+	&:focus-visible {
+    .hover {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 300ms $easeOutExpo, transform 300ms $easeOutExpo;
+    }
+  }
+}
+```
+
+Now we know how to avoid non-working styles in the selector list, which contains the selector `:focus-visible` in safari browser!
+
+Thanks to everyone, cheers!
