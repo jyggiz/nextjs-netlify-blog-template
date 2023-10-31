@@ -11,3 +11,7 @@ tags:
     name: typescript
   - slug: personal-experience
     name: personal experience
+  - slug: aws
+    name: AWS
+  - slug: cloud-computing
+    name: cloud computing
